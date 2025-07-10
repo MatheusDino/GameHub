@@ -17,5 +17,9 @@ public class JogoController {
         return jogoCollection.getAllJogos();
     }
 
+    public void create(Jogo jogo) {
+        jogoCollection.insert(jogo);
+    }
+
     //todo yet
 }
