@@ -8,5 +8,5 @@ public class ConquistaDTO {
     private String nomeConquista;
     private int progresso;
     private boolean concluida;
-    private int jogoId;
+    private Long jogoId;
 }

@@ -60,14 +60,14 @@
             loadGamesForSelect();
         };
 
-        // Load games into both dropdowns
+        // Load games into both dropdowns - WORKING VERSION
         async function loadGamesForSelect() {
             try {
                 const response = await fetch(`${API_BASE_URL}/jogos`);
                 if (!response.ok) throw new Error('Failed to fetch games');
                 
                 gamesCache = await response.json();
-                console.log('Fetched games:', gamesCache); // Debug log
+                console.log('Games data:', gamesCache);
                 
                 const selectElements = [
                     document.getElementById('jogoSelect'), 
@@ -83,8 +83,8 @@
                     // Add new options
                     gamesCache.forEach(game => {
                         const option = document.createElement('option');
-                        option.value = game.id; // Adjust based on your actual response field
-                        option.textContent = game.nomeJogo || game.NomeJogo; // Handle both cases
+                        option.value = game.id_Jogo; // Exact field name from API
+                        option.textContent = game.nomeJogo;
                         select.appendChild(option);
                     });
                 });
@@ -115,15 +115,22 @@
 
         // Conquista Functions
         async function createConquista() {
+            const select = document.getElementById('jogoSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (!select.value || select.value === 'UNDEFINED_ID') {
+                alert("Please select a valid game with an ID!");
+                return;
+            }
+
             const conquista = {
                 nomeConquista: document.getElementById('conquistaNome').value,
                 progresso: parseInt(document.getElementById('conquistaProgresso').value),
-                concluida: document.getElementById('conquistaConcluida').checked, // Fixed typo here
-                jogoId: parseInt(document.getElementById('jogoSelect').value)
+                concluida: document.getElementById('conquistaConcluida').checked,
+                jogoId: Number(select.value)
             };
             
-            console.log("Sending:", conquista); 
-
+            console.log("Final payload:", conquista);
             const result = await makeRequest(`${API_BASE_URL}/conquistas`, 'POST', conquista);
             document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
         }

@@ -25,7 +25,8 @@ public class ConquistaController {
         conquista.setNomeConquista(request.getNomeConquista());
         conquista.setProgresso(request.getProgresso());
         conquista.setConcluida(request.isConcluida());
-        conquista.setJogoId((long)request.getJogoId());
+        conquista.setJogoId(request.getJogoId());
+        System.out.println("THE VALUE COMING FROM FRONTED IS --->" + request.getJogoId());
         return conquistaRepository.save(conquista);
     }
 

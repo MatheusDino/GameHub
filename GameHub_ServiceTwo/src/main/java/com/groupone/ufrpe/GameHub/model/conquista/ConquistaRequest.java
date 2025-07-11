@@ -7,5 +7,5 @@ public class ConquistaRequest {
     private String NomeConquista;
     private int Progresso;
     private boolean Concluida;
-    private int jogoId;
+    private Long jogoId;
 }
