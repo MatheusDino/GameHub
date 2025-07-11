@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: conquista-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: conquista-service
+    prefer-ip-address: false
+
+server:
+  port: 8082

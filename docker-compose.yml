@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  discovery:
+    build: 
+      context: ./GameHub_Service_Discovery
+      dockerfile: Dockerfile
+    container_name: discovery
+    ports: 
+      - "8761:8761"  # Only one ports definition per service
+    networks:
+      - gamehub-net
+
+  jogo-service:
+    build: 
+      context: ./GameHub_ServiceOne
+      dockerfile: Dockerfile
+    container_name: jogo-service
+    depends_on: 
+      - discovery
+    networks:
+      - gamehub-net
+
+  conquista-service:
+    build: 
+      context: ./GameHub_ServiceTwo
+      dockerfile: Dockerfile
+    container_name: conquista-service
+    depends_on: 
+      - discovery
+    networks:
+      - gamehub-net
+
+  gateway:
+    build: 
+      context: ./GameHub_Service_Gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports: 
+      - "8080:8080"  # Only one ports definition
+    depends_on: 
+      - discovery
+    networks:
+      - gamehub-net
+
+networks:
+  gamehub-net:
+    driver: bridge

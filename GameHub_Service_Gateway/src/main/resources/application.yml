@@ -13,14 +13,14 @@ spring:
           enabled: false
       routes:
         - id: jogo-service
-          uri: lb://JOGO-SERVICE
+          uri: lb://jogo-service
           predicates:
             - Path=/api/jogos/**
           filters:
             - StripPrefix=1
 
         - id: conquista-service
-          uri: lb://CONQUISTA-SERVICE
+          uri: lb://conquista-service
           predicates:
             - Path=/api/conquistas/**
           filters:
@@ -35,11 +35,9 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
-    fetch-registry: true
+      defaultZone: http://discovery:8761/eureka/  # ← Critical: Use container name
     register-with-eureka: true
-    healthcheck:
-      enabled: false
+    fetch-registry: true
   instance:
     prefer-ip-address: true
 

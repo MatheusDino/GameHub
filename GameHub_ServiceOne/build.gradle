@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 	implementation 'org.projectlombok:lombok:1.18.38'
 	compileOnly 'org.projectlombok:lombok:1.18.30' // Use the latest compatible version
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'

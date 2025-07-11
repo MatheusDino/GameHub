@@ -1,0 +1,1 @@
+docker-compose down; docker system prune -a; docker ps -a; docker images
