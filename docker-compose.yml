@@ -18,6 +18,7 @@ services:
     container_name: jogo-service
     depends_on: 
       - discovery
+      - conquista-service
     networks:
       - gamehub-net
 

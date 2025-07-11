@@ -12,5 +12,9 @@ eureka:
     hostname: jogo-service
     prefer-ip-address: false
 
+rest-template:
+  connect-timeout: 5000
+  read-timeout: 5000
+
 server:
   port: 8081

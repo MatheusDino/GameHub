@@ -15,4 +15,6 @@ public class Conquista {
     private String NomeConquista;
     private int Progresso;
     private boolean Concluida;
+
+    private Long jogoId;
 }
