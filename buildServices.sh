@@ -3,8 +3,8 @@
 # Define services in build order
 services=(
   "GameHub_Service_Discovery"
-  "GameHub_ServiceOne" 
-  "GameHub_ServiceTwo"
+  "GameHub_Service_Jogo" 
+  "GameHub_Service_Conquista"
   "GameHub_Service_Gateway"
 )
 

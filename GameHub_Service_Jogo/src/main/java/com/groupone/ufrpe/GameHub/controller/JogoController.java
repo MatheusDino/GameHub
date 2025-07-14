@@ -41,7 +41,7 @@ public class JogoController {
     @GetMapping("/{id}/conquistas")
     public ResponseEntity<?> getConquistasByJogo(@PathVariable Long id) {
         try {
-            String url = "http://CONQUISTA-SERVICE/conquistas/by-jogo/" + id;
+            String url = "http://conquista-service/conquistas/by-jogo/" + id;
 
             // Add debug logging
             System.out.println("Attempting to call: " + url);

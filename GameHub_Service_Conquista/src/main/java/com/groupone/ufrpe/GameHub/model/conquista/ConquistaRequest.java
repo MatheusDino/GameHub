@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ConquistaRequest {
+//    private Long id;
     private String NomeConquista;
     private int Progresso;
     private boolean Concluida;
