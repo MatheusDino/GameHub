@@ -12,7 +12,7 @@ public class Jogo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID_Jogo;
 
-    private String NomeJogo;
-    private String Genero;
-    private String Publisher;
+    private String nomeJogo;
+    private String genero;
+    private String publisher;
 }
