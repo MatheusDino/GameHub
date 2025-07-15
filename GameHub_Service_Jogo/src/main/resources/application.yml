@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: jogo-service
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    hostname: jogo-service
+    prefer-ip-address: false
+
+rest-template:
+  connect-timeout: 5000
+  read-timeout: 5000
+
+server:
+  port: 8081
