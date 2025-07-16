@@ -12,9 +12,9 @@ public class Conquista {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ID_Conquista;
 
-    private String NomeConquista;
-    private int Progresso;
-    private boolean Concluida;
+    private String nomeConquista;
+    private int progresso;
+    private boolean concluida;
 
     private Long jogoId;
 }

@@ -12,8 +12,24 @@
         pre { background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
         .action-group { margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         .search-container { display: flex; gap: 10px; }
-        .search-container input { flex: 1; min-width: 0; } /* Fix for input field */
-        .search-container button { width: auto; padding: 8px 15px; } /* Better button sizing */
+        .search-container input { flex: 1; min-width: 0; }
+        .search-container button { width: auto; padding: 8px 15px; }
+        .progress-range { display: flex; gap: 10px; align-items: center; }
+        .progress-range input { width: 45%; }
+        .form-row { display: flex; gap: 10px; align-items: center; }
+        .form-row input { flex: 1; }
+        .form-row button { width: auto; padding: 8px 15px; }
+        #debugPanel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 10px;
+            font-family: monospace;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -22,15 +38,23 @@
         <!-- Jogo Section -->
         <div class="form-section">
             <h2>Jogos</h2>
+            <div class="form-row">
+                <input type="number" id="jogoId" placeholder="ID (leave empty for new)" style="flex: 1;">
+                <button onclick="loadJogoForEdit()" style="width: auto;">Load</button>
+            </div>
             <input type="text" id="jogoNome" placeholder="Nome do Jogo">
             <input type="text" id="jogoGenero" placeholder="Gênero">
             <input type="text" id="jogoPublisher" placeholder="Publisher">
-            <button onclick="createJogo()">Create Jogo</button>
+            <div class="form-row">
+                <button onclick="createJogo()" style="flex: 1;">Create</button>
+                <button onclick="updateJogo()" style="flex: 1;">Update</button>
+            </div>
             
             <div class="action-group">
                 <h3>Basic Operations</h3>
                 <button onclick="getJogos()">Get All Jogos</button>
-                <button onclick="getJogoCount()">Get Jogo Count</button>
+                <button onclick="getJogoCount()">Get Count</button>
+                <button onclick="deleteJogo()">Delete Jogo</button>
             </div>
             
             <div class="action-group">
@@ -46,14 +70,11 @@
             </div>
             
             <div class="action-group">
-                <h3>Advanced Operations</h3>
-                <input type="number" id="jogoId" placeholder="Jogo ID">
-                <button onclick="getJogoById()">Get Jogo by ID</button>
-                <button onclick="deleteJogo()">Delete Jogo</button>
-                <div>
-                    <input type="number" id="pageNumber" placeholder="Page" value="0" style="width: 40%;">
-                    <input type="number" id="pageSize" placeholder="Size" value="10" style="width: 40%;">
-                    <button onclick="getPaginatedJogos()">Get Paginated</button>
+                <h3>Pagination</h3>
+                <div class="pagination-row">
+                    <input type="number" id="pageNumber" placeholder="Page" value="0" style="width: 30%;">
+                    <input type="number" id="pageSize" placeholder="Size" value="10" style="width: 30%;">
+                    <button onclick="getPaginatedJogos()" style="width: auto;">Get</button>
                 </div>
             </div>
             
@@ -63,14 +84,50 @@
         <!-- Conquista Section -->
         <div class="form-section">
             <h2>Conquistas</h2>
+            <div class="form-row">
+                <input type="number" id="conquistaId" placeholder="ID (leave empty for new)" style="flex: 1;">
+                <button onclick="loadConquistaForEdit()" style="width: auto;">Load</button>
+            </div>
             <input type="text" id="conquistaNome" placeholder="Nome da Conquista">
-            <input type="number" id="conquistaProgresso" placeholder="Progresso (0-100)" min="0" max="100">
+            <div class="progress-range">
+                <input type="number" id="conquistaProgresso" placeholder="Progresso (0-100)" min="0" max="100">
+                <span>%</span>
+            </div>
             <select id="jogoSelect">
                 <option value="">Select a Game</option>
             </select>
             <label><input type="checkbox" id="conquistaConcluida"> Concluída?</label>
-            <button onclick="createConquista()">Create Conquista</button>
-            <button onclick="getConquistas()">Get All Conquistas</button>
+            <div class="form-row">
+                <button onclick="createConquista()" style="flex: 1;">Create</button>
+                <button onclick="updateConquista()" style="flex: 1;">Update</button>
+            </div>
+            
+            <div class="action-group">
+                <h3>Operations</h3>
+                <button onclick="getConquistas()">Get All</button>
+                <button onclick="deleteConquista()">Delete</button>
+            </div>
+            
+            <div class="action-group">
+                <h3>Search & Filter</h3>
+                <div class="search-container">
+                    <input type="text" id="searchConquista" placeholder="Search by name">
+                    <button onclick="searchConquistas()">Search</button>
+                </div>
+                <div class="progress-range">
+                    <input type="number" id="progressMin" placeholder="Min" min="0" max="100">
+                    <span>to</span>
+                    <input type="number" id="progressMax" placeholder="Max" min="0" max="100">
+                    <button onclick="filterByProgress()">Filter</button>
+                </div>
+                <select id="filterConcluida">
+                    <option value="">All Status</option>
+                    <option value="true">Completed</option>
+                    <option value="false">Incomplete</option>
+                </select>
+                <button onclick="filterByStatus()">Filter Status</button>
+            </div>
+            
             <pre id="conquistaResult">Results will appear here</pre>
         </div>
 
@@ -80,7 +137,11 @@
             <select id="queryJogoSelect">
                 <option value="">Select a Game</option>
             </select>
-            <button onclick="getConquistasByJogo()">Get Conquistas for Game</button>
+            <button onclick="getConquistasByJogo()">Get Conquistas</button>
+            <div class="action-group">
+                <h3>Stats</h3>
+                <button onclick="getConquistaCount()">Get Count</button>
+            </div>
             <pre id="queryResult">Query results will appear here</pre>
         </div>
     </div>
@@ -88,13 +149,9 @@
     <script>
         const API_BASE_URL = 'http://localhost:8080/api';
         let gamesCache = [];
+        let currentConquista = null;
 
-        // Initialize - Load games on startup
-        window.onload = function() {
-            loadGamesForSelect();
-        };
-
-        // Load games into both dropdowns
+        // Load games into dropdowns (FIXED VERSION)
         async function loadGamesForSelect() {
             try {
                 const response = await fetch(`${API_BASE_URL}/jogos`);
@@ -115,7 +172,7 @@
                     
                     gamesCache.forEach(game => {
                         const option = document.createElement('option');
-                        option.value = game.id;
+                        option.value = game.id_Jogo;
                         option.textContent = game.nomeJogo;
                         select.appendChild(option);
                     });
@@ -126,9 +183,60 @@
             }
         }
 
-        // ========== JOGO FUNCTIONS ==========
-        
-        // Create Jogo
+        // ===== FIXED createConquista FUNCTION =====
+        async function createConquista() {
+            const jogoSelect = document.getElementById('jogoSelect');
+            const selectedOption = jogoSelect.options[jogoSelect.selectedIndex];
+            
+            if (!selectedOption.value) {
+                alert("Please select a game!");
+                debugLog("No game selected - aborting");
+                return;
+            }
+
+            const conquista = {
+                nomeConquista: document.getElementById('conquistaNome').value,
+                progresso: parseInt(document.getElementById('conquistaProgresso').value),
+                concluida: document.getElementById('conquistaConcluida').checked,
+                jogoId: Number(selectedOption.value)  // Ensure numeric value
+            };
+            
+            debugLog("Submitting:", conquista);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/conquistas`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(conquista)
+                });
+                
+                if (!response.ok) throw new Error(await response.text());
+                
+                const result = await response.json();
+                debugLog("Success:", result);
+            } catch (error) {
+                debugLog("Error:", error);
+                alert("Error: " + error.message);
+            }
+        }
+
+        // ===== JOGO FUNCTIONS =====
+        async function loadJogoForEdit() {
+            const id = document.getElementById('jogoId').value;
+            if (!id) return alert("Please enter a Jogo ID");
+            
+            const result = await makeRequest(`${API_BASE_URL}/jogos/${id}`, 'GET');
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+            
+            document.getElementById('jogoNome').value = result.nomeJogo;
+            document.getElementById('jogoGenero').value = result.genero;
+            document.getElementById('jogoPublisher').value = result.publisher;
+            document.getElementById('jogoResult').textContent = "Loaded for editing:\n" + JSON.stringify(result, null, 2);
+        }
+
         async function createJogo() {
             const jogo = {
                 nomeJogo: document.getElementById('jogoNome').value,
@@ -141,14 +249,27 @@
             loadGamesForSelect();
         }
 
-        // Get all Jogos
+        async function updateJogo() {
+            const id = document.getElementById('jogoId').value;
+            if (!id) return alert("Please enter a Jogo ID");
+            
+            const jogo = {
+                nomeJogo: document.getElementById('jogoNome').value,
+                genero: document.getElementById('jogoGenero').value,
+                publisher: document.getElementById('jogoPublisher').value
+            };
+            
+            const result = await makeRequest(`${API_BASE_URL}/jogos/${id}`, 'PUT', jogo);
+            document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
+            loadGamesForSelect();
+        }
+
         async function getJogos() {
             const result = await makeRequest(`${API_BASE_URL}/jogos`, 'GET');
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
             gamesCache = result;
         }
 
-        // Get Jogo by ID
         async function getJogoById() {
             const id = document.getElementById('jogoId').value;
             if (!id) return alert("Please enter a Jogo ID");
@@ -157,7 +278,6 @@
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
         }
 
-        // Delete Jogo
         async function deleteJogo() {
             const id = document.getElementById('jogoId').value;
             if (!id) return alert("Please enter a Jogo ID");
@@ -167,7 +287,6 @@
             loadGamesForSelect();
         }
 
-        // Search by name
         async function searchJogosByName() {
             const nome = document.getElementById('searchNome').value;
             if (!nome) return alert("Please enter a search term");
@@ -176,7 +295,6 @@
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
         }
 
-        // Filter by genre
         async function filterJogosByGenre() {
             const genero = document.getElementById('filterGenero').value;
             if (!genero) return alert("Please enter a genre");
@@ -185,7 +303,6 @@
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
         }
 
-        // Filter by publisher
         async function filterJogosByPublisher() {
             const publisher = document.getElementById('filterPublisher').value;
             if (!publisher) return alert("Please enter a publisher");
@@ -194,13 +311,11 @@
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
         }
 
-        // Get count of all jogos
         async function getJogoCount() {
             const result = await makeRequest(`${API_BASE_URL}/jogos/count`, 'GET');
             document.getElementById('jogoResult').textContent = `Total Jogos: ${result}`;
         }
 
-        // Get paginated list of jogos
         async function getPaginatedJogos() {
             const page = document.getElementById('pageNumber').value || 0;
             const size = document.getElementById('pageSize').value || 10;
@@ -208,32 +323,91 @@
             const result = await makeRequest(`${API_BASE_URL}/jogos/paginated?page=${page}&size=${size}`, 'GET');
             document.getElementById('jogoResult').textContent = JSON.stringify(result, null, 2);
         }
-
-        // ========== CONQUISTA FUNCTIONS ==========
         
-        async function createConquista() {
-            const select = document.getElementById('jogoSelect');
-            const selectedOption = select.options[select.selectedIndex];
+        // ===== CONQUISTA FUNCTIONS =====
+        async function loadConquistaForEdit() {
+            const id = document.getElementById('conquistaId').value;
+            if (!id) return alert("Please enter a Conquista ID");
             
-            if (!select.value) {
-                alert("Please select a valid game!");
+            const result = await makeRequest(`${API_BASE_URL}/conquistas/${id}`, 'GET');
+            if (result.error) {
+                alert(result.error);
                 return;
             }
+            
+            currentConquista = result;
+            document.getElementById('conquistaNome').value = result.nomeConquista;
+            document.getElementById('conquistaProgresso').value = result.progresso;
+            document.getElementById('conquistaConcluida').checked = result.concluida;
+            document.getElementById('jogoSelect').value = result.jogoId;
+            document.getElementById('conquistaResult').textContent = "Loaded for editing:\n" + JSON.stringify(result, null, 2);
+        }
 
+        async function updateConquista() {
+            if (!currentConquista) return alert("No conquista loaded for editing");
+            
             const conquista = {
                 nomeConquista: document.getElementById('conquistaNome').value,
                 progresso: parseInt(document.getElementById('conquistaProgresso').value),
                 concluida: document.getElementById('conquistaConcluida').checked,
-                jogoId: Number(select.value)
+                jogoId: parseInt(document.getElementById('jogoSelect').value)
             };
             
-            const result = await makeRequest(`${API_BASE_URL}/conquistas`, 'POST', conquista);
+            const result = await makeRequest(
+                `${API_BASE_URL}/conquistas/${currentConquista.ID_Conquista}`,
+                'PUT', 
+                conquista
+            );
             document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+            currentConquista = null;
         }
 
         async function getConquistas() {
             const result = await makeRequest(`${API_BASE_URL}/conquistas`, 'GET');
             document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function deleteConquista() {
+            const id = document.getElementById('conquistaId').value;
+            if (!id) return alert("Please enter a Conquista ID");
+            
+            const result = await makeRequest(`${API_BASE_URL}/conquistas/${id}`, 'DELETE');
+            document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function searchConquistas() {
+            const term = document.getElementById('searchConquista').value;
+            if (!term) return alert("Please enter a search term");
+            
+            const result = await makeRequest(`${API_BASE_URL}/conquistas/search?nome=${encodeURIComponent(term)}`, 'GET');
+            document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function filterByProgress() {
+            const min = document.getElementById('progressMin').value;
+            const max = document.getElementById('progressMax').value;
+            
+            let url = `${API_BASE_URL}/conquistas/progress?`;
+            if (min) url += `min=${min}&`;
+            if (max) url += `max=${max}`;
+            
+            url = url.endsWith('&') ? url.slice(0, -1) : url;
+            
+            const result = await makeRequest(url, 'GET');
+            document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function filterByStatus() {
+            const status = document.getElementById('filterConcluida').value;
+            if (!status) return;
+            
+            const result = await makeRequest(`${API_BASE_URL}/conquistas/status/${status}`, 'GET');
+            document.getElementById('conquistaResult').textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function getConquistaCount() {
+            const result = await makeRequest(`${API_BASE_URL}/conquistas/count`, 'GET');
+            document.getElementById('queryResult').textContent = `Total Conquistas: ${result}`;
         }
 
         async function getConquistasByJogo() {
@@ -261,6 +435,13 @@
                 return { error: error.message };
             }
         }
+
+         // Initialize - Load games on startup
+         window.onload = function() {
+            debugLog("Initializing application...");
+            loadGamesForSelect();
+        };
+
     </script>
 </body>
 </html>
