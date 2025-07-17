@@ -25,12 +25,14 @@ spring:
             - Path=/api/conquistas/**
           filters:
             - StripPrefix=1
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                          allowedOrigins: "*"
+                          allowedMethods: "*"
+                          allowedHeaders: "*"
 
 eureka:
   client:

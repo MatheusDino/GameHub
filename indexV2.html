@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub Microservices Tester</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #4fc3f7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            margin: 0 0 15px 0;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        
+        .service-section {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .endpoint-card {
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: var(--light);
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        
+        .get { background-color: var(--success); color: white; }
+        .post { background-color: var(--primary); color: white; }
+        .put { background-color: var(--warning); color: var(--dark); }
+        .delete { background-color: var(--danger); color: white; }
+        
+        .endpoint-path {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        form {
+            margin-top: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 100px;
+            font-family: monospace;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .response-container {
+            margin-top: 20px;
+        }
+        
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #dee2e6;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status {
+            font-weight: bold;
+        }
+        
+        .status-200 { color: var(--success); }
+        .status-404 { color: var(--danger); }
+        .status-500 { color: var(--danger); }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .pagination-controls input {
+            width: 60px;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-controls input {
+            flex: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>GameHub Microservices Tester</h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('jogo')">Jogo Service</div>
+            <div class="tab" onclick="switchTab('conquista')">Conquista Service</div>
+        </div>
+        
+        <!-- Jogo Service Tab -->
+        <div id="jogo-tab" class="tab-content active">
+            <div class="service-section">
+                <h2>Jogo Service</h2>
+                
+                <!-- Create Jogo -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/jogos</span>
+                    </div>
+                    <p>Create a new game</p>
+                    <form id="create-jogo-form">
+                        <div class="form-group">
+                            <label for="jogo-nome">Nome do Jogo:</label>
+                            <input type="text" id="jogo-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jogo-genero">Gênero:</label>
+                            <input type="text" id="jogo-genero" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="jogo-publisher">Publisher:</label>
+                            <input type="text" id="jogo-publisher" required>
+                        </div>
+                        <button type="submit">Create Jogo</button>
+                    </form>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="create-jogo-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get All Jogos -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos</span>
+                    </div>
+                    <p>Get all games</p>
+                    <button onclick="getAllJogos()">Get All Jogos</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="all-jogos-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Jogo by ID -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/{id}</span>
+                    </div>
+                    <p>Get a specific game by ID</p>
+                    <div class="form-group">
+                        <label for="jogo-id">Jogo ID:</label>
+                        <input type="number" id="jogo-id">
+                    </div>
+                    <button onclick="getJogoById()">Get Jogo</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="jogo-by-id-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Update Jogo -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/jogos/{id}</span>
+                    </div>
+                    <p>Update an existing game</p>
+                    <form id="update-jogo-form">
+                        <div class="form-group">
+                            <label for="update-jogo-id">Jogo ID:</label>
+                            <input type="number" id="update-jogo-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-jogo-nome">Nome do Jogo:</label>
+                            <input type="text" id="update-jogo-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-jogo-genero">Gênero:</label>
+                            <input type="text" id="update-jogo-genero" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-jogo-publisher">Publisher:</label>
+                            <input type="text" id="update-jogo-publisher" required>
+                        </div>
+                        <button type="submit">Update Jogo</button>
+                    </form>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="update-jogo-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Delete Jogo -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method delete">DELETE</span>
+                        <span class="endpoint-path">/api/jogos/{id}</span>
+                    </div>
+                    <p>Delete a game</p>
+                    <div class="form-group">
+                        <label for="delete-jogo-id">Jogo ID:</label>
+                        <input type="number" id="delete-jogo-id">
+                    </div>
+                    <button onclick="deleteJogo()">Delete Jogo</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="delete-jogo-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Search Jogos by Name -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/search?nome={name}</span>
+                    </div>
+                    <p>Search games by name (contains, case insensitive)</p>
+                    <div class="form-group">
+                        <label for="search-jogo-name">Name:</label>
+                        <input type="text" id="search-jogo-name">
+                    </div>
+                    <button onclick="searchJogosByName()">Search</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="search-jogo-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Filter by Genre -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/genre/{genre}</span>
+                    </div>
+                    <p>Filter games by genre (exact match, case insensitive)</p>
+                    <div class="form-group">
+                        <label for="filter-jogo-genre">Genre:</label>
+                        <input type="text" id="filter-jogo-genre">
+                    </div>
+                    <button onclick="filterJogosByGenre()">Filter</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="filter-genre-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Filter by Publisher -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/publisher/{publisher}</span>
+                    </div>
+                    <p>Filter games by publisher (exact match, case insensitive)</p>
+                    <div class="form-group">
+                        <label for="filter-jogo-publisher">Publisher:</label>
+                        <input type="text" id="filter-jogo-publisher">
+                    </div>
+                    <button onclick="filterJogosByPublisher()">Filter</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="filter-publisher-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Jogo Count -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/count</span>
+                    </div>
+                    <p>Get total count of games</p>
+                    <button onclick="getJogoCount()">Get Count</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="jogo-count-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Paginated Jogos -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/paginated?page={page}&size={size}</span>
+                    </div>
+                    <p>Get paginated list of games</p>
+                    <div class="pagination-controls">
+                        <div class="form-group">
+                            <label for="jogo-page">Page:</label>
+                            <input type="number" id="jogo-page" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="jogo-size">Size:</label>
+                            <input type="number" id="jogo-size" value="10" min="1">
+                        </div>
+                    </div>
+                    <button onclick="getPaginatedJogos()">Get Paginated</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="paginated-jogos-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Conquistas by Jogo ID -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/jogos/{id}/conquistas</span>
+                    </div>
+                    <p>Get achievements for a specific game</p>
+                    <div class="form-group">
+                        <label for="conquistas-jogo-id">Jogo ID:</label>
+                        <input type="number" id="conquistas-jogo-id">
+                    </div>
+                    <button onclick="getConquistasByJogo()">Get Conquistas</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="conquistas-by-jogo-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conquista Service Tab -->
+        <div id="conquista-tab" class="tab-content">
+            <div class="service-section">
+                <h2>Conquista Service</h2>
+                
+                <!-- Create Conquista -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method post">POST</span>
+                        <span class="endpoint-path">/api/conquistas</span>
+                    </div>
+                    <p>Create a new achievement</p>
+                    <form id="create-conquista-form">
+                        <div class="form-group">
+                            <label for="conquista-nome">Nome da Conquista:</label>
+                            <input type="text" id="conquista-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="conquista-progresso">Progresso (0-100):</label>
+                            <input type="number" id="conquista-progresso" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="conquista-concluida">Concluída:</label>
+                            <select id="conquista-concluida" required>
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="conquista-jogo-id">Jogo ID:</label>
+                            <input type="number" id="conquista-jogo-id" required>
+                        </div>
+                        <button type="submit">Create Conquista</button>
+                    </form>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="create-conquista-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get All Conquistas -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas</span>
+                    </div>
+                    <p>Get all achievements</p>
+                    <button onclick="getAllConquistas()">Get All Conquistas</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="all-conquistas-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Conquista by ID -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/{id}</span>
+                    </div>
+                    <p>Get a specific achievement by ID</p>
+                    <div class="form-group">
+                        <label for="conquista-id">Conquista ID:</label>
+                        <input type="number" id="conquista-id">
+                    </div>
+                    <button onclick="getConquistaById()">Get Conquista</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="conquista-by-id-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Update Conquista -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method put">PUT</span>
+                        <span class="endpoint-path">/api/conquistas/{id}</span>
+                    </div>
+                    <p>Update an existing achievement</p>
+                    <form id="update-conquista-form">
+                        <div class="form-group">
+                            <label for="update-conquista-id">Conquista ID:</label>
+                            <input type="number" id="update-conquista-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-conquista-nome">Nome da Conquista:</label>
+                            <input type="text" id="update-conquista-nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-conquista-progresso">Progresso (0-100):</label>
+                            <input type="number" id="update-conquista-progresso" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-conquista-concluida">Concluída:</label>
+                            <select id="update-conquista-concluida" required>
+                                <option value="true">Sim</option>
+                                <option value="false">Não</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="update-conquista-jogo-id">Jogo ID:</label>
+                            <input type="number" id="update-conquista-jogo-id" required>
+                        </div>
+                        <button type="submit">Update Conquista</button>
+                    </form>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="update-conquista-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Delete Conquista -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method delete">DELETE</span>
+                        <span class="endpoint-path">/api/conquistas/{id}</span>
+                    </div>
+                    <p>Delete an achievement</p>
+                    <div class="form-group">
+                        <label for="delete-conquista-id">Conquista ID:</label>
+                        <input type="number" id="delete-conquista-id">
+                    </div>
+                    <button onclick="deleteConquista()">Delete Conquista</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="delete-conquista-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Conquistas by Jogo ID -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/by-jogo/{jogoId}</span>
+                    </div>
+                    <p>Get achievements for a specific game</p>
+                    <div class="form-group">
+                        <label for="conquistas-by-jogo-id">Jogo ID:</label>
+                        <input type="number" id="conquistas-by-jogo-id">
+                    </div>
+                    <button onclick="getConquistasByJogoId()">Get Conquistas</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="conquistas-by-jogo-id-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Search Conquistas by Name -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/search?nome={name}</span>
+                    </div>
+                    <p>Search achievements by name (contains, case insensitive)</p>
+                    <div class="form-group">
+                        <label for="search-conquista-name">Name:</label>
+                        <input type="text" id="search-conquista-name">
+                    </div>
+                    <button onclick="searchConquistasByName()">Search</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="search-conquista-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Filter by Completion Status -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/status/{concluida}</span>
+                    </div>
+                    <p>Filter achievements by completion status</p>
+                    <div class="form-group">
+                        <label for="filter-conquista-status">Status:</label>
+                        <select id="filter-conquista-status">
+                            <option value="true">Concluída</option>
+                            <option value="false">Não Concluída</option>
+                        </select>
+                    </div>
+                    <button onclick="filterConquistasByStatus()">Filter</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="filter-status-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Filter by Progress Range -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/progress?min={min}&max={max}</span>
+                    </div>
+                    <p>Filter achievements by progress range</p>
+                    <div class="filter-controls">
+                        <div class="form-group">
+                            <label for="filter-conquista-min">Min Progress:</label>
+                            <input type="number" id="filter-conquista-min" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-conquista-max">Max Progress:</label>
+                            <input type="number" id="filter-conquista-max" min="0" max="100">
+                        </div>
+                    </div>
+                    <button onclick="filterConquistasByProgress()">Filter</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="filter-progress-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Conquista Count -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/count</span>
+                    </div>
+                    <p>Get total count of achievements</p>
+                    <button onclick="getConquistaCount()">Get Count</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="conquista-count-response"></div>
+                    </div>
+                </div>
+                
+                <!-- Get Paginated Conquistas -->
+                <div class="endpoint-card">
+                    <div>
+                        <span class="method get">GET</span>
+                        <span class="endpoint-path">/api/conquistas/paginated?page={page}&size={size}</span>
+                    </div>
+                    <p>Get paginated list of achievements</p>
+                    <div class="pagination-controls">
+                        <div class="form-group">
+                            <label for="conquista-page">Page:</label>
+                            <input type="number" id="conquista-page" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="conquista-size">Size:</label>
+                            <input type="number" id="conquista-size" value="10" min="1">
+                        </div>
+                    </div>
+                    <button onclick="getPaginatedConquistas()">Get Paginated</button>
+                    <div class="response-container">
+                        <label>Response:</label>
+                        <div class="response" id="paginated-conquistas-response"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab:nth-child(${tabName === 'jogo' ? 1 : 2})`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+        
+        // Helper function to display responses
+        function displayResponse(elementId, response, status) {
+            const responseElement = document.getElementById(elementId);
+            let formattedResponse;
+            
+            try {
+                if (typeof response === 'string') {
+                    formattedResponse = response;
+                } else {
+                    formattedResponse = JSON.stringify(response, null, 2);
+                }
+            } catch (e) {
+                formattedResponse = response;
+            }
+            
+            if (status) {
+                responseElement.innerHTML = `<div class="status status-${status}">Status: ${status}</div><pre>${formattedResponse}</pre>`;
+            } else {
+                responseElement.innerHTML = `<pre>${formattedResponse}</pre>`;
+            }
+        }
+
+        const BASE_URL = 'http://localhost:8080';
+        
+        // Helper function for API calls
+        async function makeApiCall(method, endpoint, data = null) {
+            const url = `${BASE_URL}${endpoint}`;
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include' // For cookies if needed
+            };
+            
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(url, options);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Try to parse JSON, fallback to text if not JSON
+                let responseData;
+                try {
+                    responseData = await response.json();
+                } catch (e) {
+                    responseData = await response.text();
+                }
+                
+                return { 
+                    data: responseData, 
+                    status: response.status,
+                    ok: true
+                };
+            } catch (error) {
+                console.error('API call failed:', error);
+                return {
+                    error: error.message,
+                    ok: false
+                };
+            }
+        }
+        
+        // Jogo Service Functions
+        async function createJogo(event) {
+            if (event) event.preventDefault();
+            
+            const jogo = {
+                nomeJogo: document.getElementById('jogo-nome').value,
+                genero: document.getElementById('jogo-genero').value,
+                publisher: document.getElementById('jogo-publisher').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/jogos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jogo)
+                });
+                
+                const data = await response.json();
+                displayResponse('create-jogo-response', data, response.status);
+                
+                if (response.ok) {
+                    document.getElementById('create-jogo-form').reset();
+                }
+            } catch (error) {
+                displayResponse('create-jogo-response', `Error: ${error.message}`, '500');
+            }
+        }
+        
+        async function getAllJogos() {
+            try {
+                const response = await fetch('http://localhost:8080/api/jogos');
+                const data = await response.json();
+                displayResponse('all-jogos-response', data, response.status);
+            } catch (error) {
+                displayResponse('all-jogos-response', `Error: ${error.message}`, '500');
+            }
+        }
+        
+        async function getJogoById() {
+            const id = document.getElementById('jogo-id').value;
+            if (!id) {
+                alert('Please enter a Jogo ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/${id}`);
+                const data = await response.json();
+                displayResponse('jogo-by-id-response', data, response.status);
+            } catch (error) {
+                displayResponse('jogo-by-id-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function updateJogo(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('update-jogo-id').value;
+            if (!id) {
+                alert('Please enter a Jogo ID');
+                return;
+            }
+            
+            const jogo = {
+                nomeJogo: document.getElementById('update-jogo-nome').value,
+                genero: document.getElementById('update-jogo-genero').value,
+                publisher: document.getElementById('update-jogo-publisher').value
+            };
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jogo)
+                });
+                const data = await response.json();
+                displayResponse('update-jogo-response', data, response.status);
+            } catch (error) {
+                displayResponse('update-jogo-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function deleteJogo() {
+            const id = document.getElementById('delete-jogo-id').value;
+            if (!id) {
+                alert('Please enter a Jogo ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.text().catch(() => 'Deleted successfully');
+                displayResponse('delete-jogo-response', data, response.status);
+                
+                if (response.ok) {
+                    document.getElementById('delete-jogo-id').value = '';
+                }
+            } catch (error) {
+                displayResponse('delete-jogo-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function searchJogosByName() {
+            const name = document.getElementById('search-jogo-name').value;
+            if (!name) {
+                alert('Please enter a name to search');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/search?nome=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                displayResponse('search-jogo-response', data, response.status);
+            } catch (error) {
+                displayResponse('search-jogo-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function filterJogosByGenre() {
+            const genre = document.getElementById('filter-jogo-genre').value;
+            if (!genre) {
+                alert('Please enter a genre to filter');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/genre/${encodeURIComponent(genre)}`);
+                const data = await response.json();
+                displayResponse('filter-genre-response', data, response.status);
+            } catch (error) {
+                displayResponse('filter-genre-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function filterJogosByPublisher() {
+            const publisher = document.getElementById('filter-jogo-publisher').value;
+            if (!publisher) {
+                alert('Please enter a publisher to filter');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/publisher/${encodeURIComponent(publisher)}`);
+                const data = await response.json();
+                displayResponse('filter-publisher-response', data, response.status);
+            } catch (error) {
+                displayResponse('filter-publisher-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getJogoCount() {
+            try {
+                const response = await fetch('http://localhost:8080/api/jogos/count');
+                const data = await response.json();
+                displayResponse('jogo-count-response', data, response.status);
+            } catch (error) {
+                displayResponse('jogo-count-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getPaginatedJogos() {
+            const page = document.getElementById('jogo-page').value || 0;
+            const size = document.getElementById('jogo-size').value || 10;
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/paginated?page=${page}&size=${size}`);
+                const data = await response.json();
+                displayResponse('paginated-jogos-response', data, response.status);
+            } catch (error) {
+                displayResponse('paginated-jogos-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getConquistasByJogo() {
+            const id = document.getElementById('conquistas-jogo-id').value;
+            if (!id) {
+                alert('Please enter a Jogo ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/jogos/${id}/conquistas`);
+                const data = await response.json();
+                displayResponse('conquistas-by-jogo-response', data, response.status);
+            } catch (error) {
+                displayResponse('conquistas-by-jogo-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        // Conquista Service Functions
+        async function createConquista(event) {
+            if (event) event.preventDefault();
+            
+            const conquista = {
+                nomeConquista: document.getElementById('conquista-nome').value,
+                progresso: parseInt(document.getElementById('conquista-progresso').value),
+                concluida: document.getElementById('conquista-concluida').value === 'true',
+                jogoId: parseInt(document.getElementById('conquista-jogo-id').value)
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/conquistas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(conquista)
+                });
+                const data = await response.json();
+                displayResponse('create-conquista-response', data, response.status);
+                
+                if (response.ok) {
+                    document.getElementById('create-conquista-form').reset();
+                }
+            } catch (error) {
+                displayResponse('create-conquista-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getAllConquistas() {
+            try {
+                const response = await fetch('http://localhost:8080/api/conquistas');
+                const data = await response.json();
+                displayResponse('all-conquistas-response', data, response.status);
+            } catch (error) {
+                displayResponse('all-conquistas-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getConquistaById() {
+            const id = document.getElementById('conquista-id').value;
+            if (!id) {
+                alert('Please enter a Conquista ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/${id}`);
+                const data = await response.json();
+                displayResponse('conquista-by-id-response', data, response.status);
+            } catch (error) {
+                displayResponse('conquista-by-id-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function updateConquista(event) {
+            if (event) event.preventDefault();
+            
+            const id = document.getElementById('update-conquista-id').value;
+            if (!id) {
+                alert('Please enter a Conquista ID');
+                return;
+            }
+            
+            const conquista = {
+                nomeConquista: document.getElementById('update-conquista-nome').value,
+                progresso: parseInt(document.getElementById('update-conquista-progresso').value),
+                concluida: document.getElementById('update-conquista-concluida').value === 'true',
+                jogoId: parseInt(document.getElementById('update-conquista-jogo-id').value)
+            };
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(conquista)
+                });
+                const data = await response.json();
+                displayResponse('update-conquista-response', data, response.status);
+            } catch (error) {
+                displayResponse('update-conquista-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function deleteConquista() {
+            const id = document.getElementById('delete-conquista-id').value;
+            if (!id) {
+                alert('Please enter a Conquista ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/${id}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.text().catch(() => 'Deleted successfully');
+                displayResponse('delete-conquista-response', data, response.status);
+                
+                if (response.ok) {
+                    document.getElementById('delete-conquista-id').value = '';
+                }
+            } catch (error) {
+                displayResponse('delete-conquista-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getConquistasByJogoId() {
+            const id = document.getElementById('conquistas-by-jogo-id').value;
+            if (!id) {
+                alert('Please enter a Jogo ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/by-jogo/${id}`);
+                const data = await response.json();
+                displayResponse('conquistas-by-jogo-id-response', data, response.status);
+            } catch (error) {
+                displayResponse('conquistas-by-jogo-id-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function searchConquistasByName() {
+            const name = document.getElementById('search-conquista-name').value;
+            if (!name) {
+                alert('Please enter a name to search');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/search?nome=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                displayResponse('search-conquista-response', data, response.status);
+            } catch (error) {
+                displayResponse('search-conquista-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function filterConquistasByStatus() {
+            const status = document.getElementById('filter-conquista-status').value;
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/status/${status}`);
+                const data = await response.json();
+                displayResponse('filter-status-response', data, response.status);
+            } catch (error) {
+                displayResponse('filter-status-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function filterConquistasByProgress() {
+            const min = document.getElementById('filter-conquista-min').value;
+            const max = document.getElementById('filter-conquista-max').value;
+            
+            let url = 'http://localhost:8080/api/conquistas/progress?';
+            if (min) url += `min=${min}`;
+            if (max) url += `${min ? '&' : ''}max=${max}`;
+            
+            if (!min && !max) {
+                alert('Please enter at least min or max progress');
+                return;
+            }
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResponse('filter-progress-response', data, response.status);
+            } catch (error) {
+                displayResponse('filter-progress-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getConquistaCount() {
+            try {
+                const response = await fetch('http://localhost:8080/api/conquistas/count');
+                const data = await response.json();
+                displayResponse('conquista-count-response', data, response.status);
+            } catch (error) {
+                displayResponse('conquista-count-response', `Error: ${error.message}`, '500');
+            }
+        }
+
+        async function getPaginatedConquistas() {
+            const page = document.getElementById('conquista-page').value || 0;
+            const size = document.getElementById('conquista-size').value || 10;
+            
+            try {
+                const response = await fetch(`http://localhost:8080/api/conquistas/paginated?page=${page}&size=${size}`);
+                const data = await response.json();
+                displayResponse('paginated-conquistas-response', data, response.status);
+            } catch (error) {
+                displayResponse('paginated-conquistas-response', `Error: ${error.message}`, '500');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('create-jogo-form').addEventListener('submit', createJogo);
+        document.getElementById('update-jogo-form').addEventListener('submit', updateJogo);
+        document.getElementById('create-conquista-form').addEventListener('submit', createConquista);
+        document.getElementById('update-conquista-form').addEventListener('submit', updateConquista);
+    </script>
+</body>
+</html>
