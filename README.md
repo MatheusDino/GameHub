@@ -8,17 +8,22 @@ O serviço de Discovery usa Eureka, permitindo que outros serviços o encontrem 
 
 Também dispõe de Load Balance para distribuição de serviços caso houvesse múltiplos serviços de um mesmo tipo.
 
+## Arquitetura
 
+Relação entre serviços: 
+![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
 
+Orquestração dos Serviços com Docker-Compose: 
+![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
 
-## Referência
+## Referências
 
  - [Video - Microsserviços com Docker-Compose](https://www.youtube.com/watch?v=5227tbCBv3o&authuser=0)
  - [Basic Spring Boot Application on Docker](https://www.codingshuttle.com/blogs/how-to-setup-docker-compose-for-a-basic-spring-boot-application/)
  - [Orquestração de Microsserviços - Lucas Albertins](https://github.com/lucasalbertins/microservices-spring-boot)
 
 
-## Deploy
+## Como rodar
 
 Primeiro, baixe e instale o docker lá em www.docker.com
 Alternativamente você pode rodar:
@@ -99,13 +104,4 @@ Logo depois, suba:
 Após os serviços subirem, eles podem demorar de 30 a 40 segundos para ficarem disponíveis. Para checar o registro dos serviços em tempo real no Eureka vá em localhost:8761
 
 Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
-
-## Arquitetura
-
-
-Relação entre serviços: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
-
-Orquestração dos Serviços com Docker-Compose: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
 
