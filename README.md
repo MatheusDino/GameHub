@@ -89,7 +89,7 @@ Caso seja Windows, use:
   .\buildServices.ps1
 ```
 
-Quando todos os serviços terminarem de buildar, então rode:
+Quando todos os serviços terminarem de buildar, então rode (certifique-se que o docker engine está ativo):
 
 ```bash
   docker-compose build
