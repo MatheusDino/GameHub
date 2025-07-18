@@ -100,4 +100,9 @@ Após os serviços subirem, eles podem demorar de 30 a 40 segundos para ficarem 
 
 Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
 
+## Arquitetura
+
+
+Inline-style: 
+![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
 
