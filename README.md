@@ -103,6 +103,9 @@ Para usar os serviços, você pode abrir o indexV2.html que está na na pasta ra
 ## Arquitetura
 
 
-Inline-style: 
+Relação entre serviços: 
 ![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
+
+Orquestração dos Serviços com Docker-Compose: 
+![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
 
