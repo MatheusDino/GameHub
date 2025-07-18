@@ -46,7 +46,7 @@ Você pode conferir a instalação assim:
   docker-compose --version
 ```
 
-Depois vai ser necessário baixar e instalar o gradle gradle.org/install
+Depois vai ser necessário baixar e instalar o gradle www.gradle.org/install
 
 Como antes, você também pode rodar:
 
