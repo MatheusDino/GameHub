@@ -5,6 +5,8 @@ import com.groupone.ufrpe.GameHub.model.conquista.ConquistaDTO;
 import com.groupone.ufrpe.GameHub.model.jogo.Jogo;
 import com.groupone.ufrpe.GameHub.model.jogo.JogoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,11 +25,13 @@ public class JogoController {
 
     private final JogoRepository jogoRepository;
     private final RestTemplate restTemplate;
+    private final DiscoveryClient discoveryClient;
 
     @Autowired
-    public JogoController(JogoRepository jogoRepository, RestTemplate restTemplate) {
+    public JogoController(JogoRepository jogoRepository, RestTemplate restTemplate, DiscoveryClient discoveryClient) {
         this.jogoRepository = jogoRepository;
         this.restTemplate = restTemplate;
+        this.discoveryClient = discoveryClient;
     }
 
     @GetMapping
@@ -43,20 +47,27 @@ public class JogoController {
     @GetMapping("/{id}/conquistas")
     public ResponseEntity<?> getConquistasByJogo(@PathVariable Long id) {
         try {
-            String url = "http://conquista-service/conquistas/by-jogo/" + id;
+            List<ServiceInstance> instances = discoveryClient.getInstances("conquista-service");
+            if (instances.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body("Conquista service not available");
+            }
+            ServiceInstance instance = instances.get(0);
+            String url = String.format("%s/conquistas/by-jogo/%d",
+                    instance.getUri().toString(),
+                    id);
 
-            // Add debug logging
-            System.out.println("Attempting to call: " + url);
+            System.out.println("Attempting to call: " + url); //debug
 
             ResponseEntity<List<ConquistaDTO>> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
                     null,
-                    new ParameterizedTypeReference<List<ConquistaDTO>>() {
+                    new ParameterizedTypeReference<>() {
                     }
             );
 
-            System.out.println("Received response: " + response.getStatusCode());
+            System.out.println("Received response: " + response.getStatusCode()); //debug
             return ResponseEntity.ok(response.getBody());
 
         } catch (HttpClientErrorException e) {
@@ -69,7 +80,6 @@ public class JogoController {
         }
     }
 
-    // Get single Jogo by ID
     @GetMapping("/{id}")
     public ResponseEntity<Jogo> getJogoById(@PathVariable Long id) {
         return jogoRepository.findById(id)
@@ -77,7 +87,6 @@ public class JogoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Update Jogo
     @PutMapping("/{id}")
     public ResponseEntity<Jogo> updateJogo(@PathVariable Long id, @RequestBody Jogo jogoDetails) {
         return jogoRepository.findById(id)
@@ -91,7 +100,6 @@ public class JogoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Delete Jogo
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteJogo(@PathVariable Long id) {
         return jogoRepository.findById(id)
@@ -102,31 +110,26 @@ public class JogoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Search by name
     @GetMapping("/search")
     public List<Jogo> searchJogosByName(@RequestParam String nome) {
         return jogoRepository.findByNomeJogoContainingIgnoreCase(nome);
     }
 
-    // Filter by genre
     @GetMapping("/genre/{genero}")
     public List<Jogo> getJogosByGenre(@PathVariable String genero) {
         return jogoRepository.findByGeneroIgnoreCase(genero);
     }
 
-    // Filter by publisher
     @GetMapping("/publisher/{publisher}")
     public List<Jogo> getJogosByPublisher(@PathVariable String publisher) {
         return jogoRepository.findByPublisherIgnoreCase(publisher);
     }
 
-    // Get count of all jogos
     @GetMapping("/count")
     public Long getJogoCount() {
         return jogoRepository.count();
     }
 
-    // Get paginated list of jogos
     @GetMapping("/paginated")
     public Page<Jogo> getPaginatedJogos(
             @RequestParam(defaultValue = "0") int page,
