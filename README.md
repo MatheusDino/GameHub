@@ -11,10 +11,10 @@ Também dispõe de Load Balance para distribuição de serviços caso houvesse m
 ## Arquitetura
 
 Relação entre serviços: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
+![alt text](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
 
 Orquestração dos Serviços com Docker-Compose: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/main/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
+![alt text](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
 
 ## Referências
 
