@@ -114,3 +114,19 @@ Após os serviços subirem, eles podem demorar de 30 a 40 segundos para ficarem 
 
 Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
 
+| Data  | Versão  | Descrição | 
+| :------------- | :-------------: | :------------- |
+| 15/07/2025  | 1.0  | Criação do documento de rascunho e introdução.|
+| 17/07/2025 | 1.1  | Complemento dos rascunhos no documento. |
+| 17/07/2025 | 2.0  | Estruturação do ReadMe dentro do github. |
+| 18/07/2025 | 2.1  | Complementos ao readme. |
+| 20/07/2025 | 2.2  | Mudanças das imagens e nomenclaturas baseadas no feedback do professor. |
+| 22/07/2025 | 2.3  | Adição de legenda, indetificação do grupo e outras informações adicionais. |
+
+
+
+
+
+
+
+
