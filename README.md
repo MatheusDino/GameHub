@@ -11,10 +11,12 @@ Também dispõe de Load Balance para distribuição de serviços caso houvesse m
 ## Arquitetura
 
 Relação entre serviços: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
+![Relação entre serviços](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesArchitecture.png?raw=true "Service Architecture")
+O sistema utiliza Service Discovery e Serviço de Gateway. O usuário interage com o sistema pelo serviço de Gateway que vai ter o trabalho de traçar as rotas das requisições feitas pelo usuário dentro do sistema e o de Discovery gerencia a descoberta entre os serviços de jogos e conquista (além dos próprios serviços de Gateway e Discovery).
 
 Orquestração dos Serviços com Docker-Compose: 
-![alt text](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
+![Orquestração dos Serviços com Docker-Compose](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
+Os serviços (Spring) são buildados junto às suas dependências usando Gradle, em seguida são empacotados e depois são conteinerizados paraserem orquestrados no Docker (Docker Compose).
 
 ## Autores
 
