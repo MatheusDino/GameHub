@@ -16,6 +16,13 @@ Relação entre serviços:
 Orquestração dos Serviços com Docker-Compose: 
 ![alt text](https://github.com/MatheusDino/GameHub/blob/DiscoveryFix/utilidades/ServicesOrchestration.png?raw=true "Service Orchestration")
 
+## Autores
+
+- [@Gibson - joao.gibson@ufrpe.br](https://www.github.com/StevensSteve)
+- [@Lucas - lucas.satiro@ufrpe.br](https://www.github.com/durant35533)
+- [@Matheus - matheus.dino@ufrpe.br](https://www.github.com/MatheusDino)
+- [@Tulio - tulio.carmo@ufrpe.br](https://www.github.com/TulioEduardo12)
+
 ## Referências
 
  - [Video - Microsserviços com Docker-Compose](https://www.youtube.com/watch?v=5227tbCBv3o&authuser=0)
