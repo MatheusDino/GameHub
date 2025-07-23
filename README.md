@@ -35,15 +35,7 @@ Os serviços (Spring) são buildados junto às suas dependências usando Gradle,
 ## Como rodar
 
 Primeiro, baixe e instale o Docker lá em www.docker.com
-Alternativamente você pode rodar:
-
-SE optar por baixar o BREW:
-
-A seguir, você pode baixar e instalar o Brew pelo link a seguir: 
-
-https://docs.brew.sh/Installation
-
-Ou você pode optar por esse comando abaixo no CMD:
+Alternativamente, se optar por baixar pelo brew (https://docs.brew.sh/Installation) você pode rodar:
 
 ```bash
   brew install docker
@@ -51,13 +43,7 @@ Ou você pode optar por esse comando abaixo no CMD:
 
 OU
 
-SE optar por baixar o CHOCOLATEY: 
-
-Você pode baixar e instalar o Chocolatey neste link abaixo:
-
-https://chocolatey.org/install
-
-Ou inserindo este comando abaixo no CMD: 
+Caso opte por baixar pelo chocolatey (https://chocolatey.org/install), rode: 
 
 ```bash
   choco install docker
@@ -71,7 +57,7 @@ Você pode conferir a instalação assim:
   docker-compose --version
 ```
 
-Depois vai ser necessário baixar e instalar o gradle www.gradle.org/install
+Depois vai ser necessário baixar e instalar o gradle (www.gradle.org/install)
 
 Como antes, você também pode rodar:
 
@@ -128,9 +114,9 @@ Logo depois, suba:
 
 Após os serviços subirem, eles podem demorar de 30 a 40 segundos para ficarem disponíveis. Para checar o registro dos serviços em tempo real no Eureka vá em localhost:8761
 
-Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
+Tenha certeza de que as portas 8080, 8081, 8082 e 8761 estão livres para uso.
 
-OBS.: Tenha certeza de que as portas 8080, 8081, 8082 e 8761 estão livres para uso. 
+Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
 
 
 ## HISTÓRICO DE REVISÕES DO RELATORIO
