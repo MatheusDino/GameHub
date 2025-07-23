@@ -34,20 +34,32 @@ Os serviços (Spring) são buildados junto às suas dependências usando Gradle,
 
 ## Como rodar
 
-Primeiro, baixe e instale o docker lá em www.docker.com
+Primeiro, baixe e instale o Docker lá em www.docker.com
 Alternativamente você pode rodar:
+
+SE optar por baixar o BREW:
+
+A seguir, você pode baixar e instalar o Brew pelo link a seguir: 
+https://docs.brew.sh/Installation
+Ou você pode optar por esse comando abaixo no CMD:
 
 ```bash
   brew install docker
 ```
 
-ou
+OU
+
+SE optar por baixar o CHOCOLATEY: 
+
+Você pode baixar e instalar o Chocolatey neste link abaixo:
+https://chocolatey.org/install
+Ou inserindo este comando abaixo no CMD: 
 
 ```bash
   choco install docker
 ```
 
-(Depois da instlação pode ser que lhe seja solicitado um reboot)
+(Depois da instalação pode ser que lhe seja solicitado um reboot)
 
 Você pode conferir a instalação assim:
 
@@ -114,17 +126,20 @@ Após os serviços subirem, eles podem demorar de 30 a 40 segundos para ficarem 
 
 Para usar os serviços, você pode abrir o indexV2.html que está na na pasta raiz do projeto em qualquer navegador. Você também pode testar todos os métodos diretamente numa ferramenta como Postman (www.postman.com/downloads) caso prefira.
 
+OBS.: Tenha certeza de que as portas 8080, 8081, 8082 e 8761 estão livres para uso. 
+
 
 ## HISTÓRICO DE REVISÕES DO RELATORIO
 
 | Data  | Versão  | Descrição | 
 | :------------- | :-------------: | :------------- |
-| 15/07/2025  | 1.0  | Criação do documento de rascunho e introdução.|
+| 15/07/2025 | 1.0  | Criação do documento de rascunho e introdução.|
 | 17/07/2025 | 1.1  | Complemento dos rascunhos no documento. |
 | 17/07/2025 | 2.0  | Estruturação do ReadMe dentro do github. |
 | 18/07/2025 | 2.1  | Complementos ao readme. |
 | 20/07/2025 | 2.2  | Mudanças das imagens e nomenclaturas baseadas no feedback do professor. |
 | 22/07/2025 | 2.3  | Adição de legenda, indetificação do grupo e outras informações adicionais. |
+| 23/07/2025 | 2.4  | Adição de informações a respeito das ferramentas Brew e Chocolatey e uma observação em relação às portas dos serviços. 
 
 
 
