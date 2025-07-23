@@ -40,7 +40,9 @@ Alternativamente você pode rodar:
 SE optar por baixar o BREW:
 
 A seguir, você pode baixar e instalar o Brew pelo link a seguir: 
+
 https://docs.brew.sh/Installation
+
 Ou você pode optar por esse comando abaixo no CMD:
 
 ```bash
@@ -52,7 +54,9 @@ OU
 SE optar por baixar o CHOCOLATEY: 
 
 Você pode baixar e instalar o Chocolatey neste link abaixo:
+
 https://chocolatey.org/install
+
 Ou inserindo este comando abaixo no CMD: 
 
 ```bash
